@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="SfDataGridDemo.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SfDataGridDemo"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dataGrid="using:Syncfusion.UI.Xaml.DataGrid"
+    xmlns:grids="using:Syncfusion.UI.Xaml.Grids"
+    xmlns:core="using:Syncfusion.UI.Xaml.Core"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="SfDataGridDemo">
+
+    <Window.SystemBackdrop>
+        <MicaBackdrop />
+    </Window.SystemBackdrop>
+
+    <Grid x:Name="rootGrid">
+        <Grid.DataContext>
+            <local:OrderInfoCollection/>
+        </Grid.DataContext>
+        <dataGrid:SfDataGrid x:Name="sfDataGrid" HeaderRowHeight="80" ItemsSource="{Binding Orders}" AllowFiltering="True">
+            <dataGrid:SfDataGrid.Columns>
+                <dataGrid:GridTextColumn MappingName="OrderID" HeaderText="Order ID" HeaderTemplate="{StaticResource DataGridEditableColumnHeaderTemplate}" AllowEditing="True" />
+                <dataGrid:GridTextColumn MappingName="CustomerID" HeaderText="Cust ID" HeaderTemplate="{StaticResource DataGridEditableColumnHeaderTemplate}" AllowEditing="True"/>
+                <dataGrid:GridTextColumn MappingName="CustomerName" HeaderText="Cust Name" HeaderTemplate="{StaticResource DataGridNonEditableColumnHeaderTemplate}" AllowEditing="False" />
+                <dataGrid:GridTextColumn MappingName="Country" HeaderText="Country" HeaderTemplate="{StaticResource DataGridNonEditableColumnHeaderTemplate}" AllowEditing="False"/>
+                <dataGrid:GridTextColumn MappingName="ShipCity" HeaderText="Ship City" HeaderTemplate="{StaticResource DataGridEditableColumnHeaderTemplate}" AllowEditing="True"/>
+            </dataGrid:SfDataGrid.Columns>
+        </dataGrid:SfDataGrid>
+    </Grid>
+</Window>
