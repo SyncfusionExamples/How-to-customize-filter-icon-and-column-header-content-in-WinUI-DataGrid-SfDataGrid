@@ -1,2 +1,305 @@
-# How-to-customize-filter-icon-and-column-header-content-in-WinUI-DataGrid-SfDataGrid
-This demo shows how to customize filter icon and column header content in WinUI SfDataGrid.
+# How to customize filter icon and column header content in WinUI DataGrid (SfDataGrid)?
+
+In [WinUI DataGrid](https://www.syncfusion.com/winui-controls/datagrid) (SfDataGrid), you can customize the header content by adding a custom icon and adjusting the filter icon position by overriding the style of the **GridHeaderCellControl**. By default, its structure consists of a ContentPresenter (which holds the content), followed by the sort icon and then the filter icon.
+
+To add a custom icon, an additional ColumnDefinition is introduced within the **GridHeaderCellControl** style to place the icon before the **ContentPresenter**. This is necessary because, even if both the icon and content are provided using a header template, modifying the ContentPresenter causes both elements to shift to the top-left. To avoid this, a separate icon is placed before the ContentPresenter, while the header template continues to be used as usual for the column.
+
+The icon’s visibility is controlled by the **GridColumn.AllowEditing** property. If AllowEditing is set to true at the SfDataGrid level but not enabled for the individual GridColumn, the icon will not be displayed. Therefore, to ensure the icon appears, you must enable AllowEditing for the respective columns.
+
+Additionally, to position the **filter icon** at the top-right corner, its **VerticalAlignment** is set to **Top** and **HorizontalAlignment** to **Right**.
+
+**Code snippet for Overriding the GridHeaderCellControl style:**
+
+```xml
+<Application.Resources>
+    <ResourceDictionary>
+        <!-- override default header cell style -->
+        <Style TargetType="dataGrid:GridHeaderCellControl">
+            <Setter Property="Background" Value="{ThemeResource SyncfusionGridHeaderCellControlBackground}" />
+            <Setter Property="BorderBrush" Value="{ThemeResource SyncfusionDataGridLineStroke}" />
+            <Setter Property="BorderThickness" Value="0,0,1,1" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="Padding" Value="12,0,12,0" />
+            <Setter Property="Foreground" Value="{ThemeResource SyncfusionGridHeaderCellControlForeground}" />
+            <Setter Property="FontSize" Value="{ThemeResource SyncfusionCaptionFontSize}" />
+            <Setter Property="FontFamily" Value="{ThemeResource SyncfusionDataGridFontFamily}" />
+            <Setter Property="FontWeight" Value="{ThemeResource SyncfusionDataGridFontWeight}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="dataGrid:GridHeaderCellControl">
+                        <Grid>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="HiddenColumnsResizingStates">
+
+                                    <VisualState x:Name="LastColumnHidden">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PART_HeaderCellBorder" Storyboard.TargetProperty="BorderThickness">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="0,0,3,1" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="HorizontalLastColumnHidden">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PART_HeaderCellBorder" Storyboard.TargetProperty="BorderThickness">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="0,0,0,1" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="VerticalLastColumnHidden">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PART_HeaderCellBorder" Storyboard.TargetProperty="BorderThickness">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="0,0,3,0" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="NoneLastColumnHidden">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PART_HeaderCellBorder" Storyboard.TargetProperty="BorderThickness">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="0,0,0,0" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="HiddenState">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PART_HeaderCellBorder" Storyboard.TargetProperty="BorderThickness">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="3,0,3,1" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="HorizontalHiddenState">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PART_HeaderCellBorder" Storyboard.TargetProperty="BorderThickness">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="0,0,0,1" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="VerticalHiddenState">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PART_HeaderCellBorder" Storyboard.TargetProperty="BorderThickness">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="3,0,3,0" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="NoneHiddenState">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PART_HeaderCellBorder" Storyboard.TargetProperty="BorderThickness">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="0,0,0,0" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="PreviousColumnHidden">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PART_HeaderCellBorder" Storyboard.TargetProperty="BorderThickness">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="3,0,1,1" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="HorizontalPreviousColumnHidden">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PART_HeaderCellBorder" Storyboard.TargetProperty="BorderThickness">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="0,0,0,1" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="VerticalPreviousColumnHidden">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PART_HeaderCellBorder" Storyboard.TargetProperty="BorderThickness">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="3,0,1,0" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="NonePreviousColumnHidden">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PART_HeaderCellBorder" Storyboard.TargetProperty="BorderThickness">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="0,0,0,0" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <!--  VisualState name changed from Normal to NormalState as Normal state is used for providing MouseOver effect  -->
+                                    <VisualState x:Name="NormalState" />
+                                </VisualStateGroup>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="PointerOver" >
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PART_HeaderCellBorder" Storyboard.TargetProperty="Background">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SyncfusionGridHeaderCellControlBackgroundPointerOver}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="AscendingSortDirection" Storyboard.TargetProperty="Foreground">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SyncfusionDataGridSortIconForegroundPointerOver}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="DescendingSortDirection" Storyboard.TargetProperty="Foreground">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SyncfusionDataGridSortIconForegroundPointerOver}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PART_FilterToggleButton" Storyboard.TargetProperty="Foreground">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SyncfusionDataGridSortIconForegroundPointerOver}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SortNumber" Storyboard.TargetProperty="Foreground">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SyncfusionGridHeaderCellControlForegroundPointerOver}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextBlock.Foreground)">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SyncfusionGridHeaderCellControlForegroundPointerOver}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Normal" >
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PART_HeaderCellBorder" Storyboard.TargetProperty="Background">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{TemplateBinding Background}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Pressed" >
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PART_HeaderCellBorder" Storyboard.TargetProperty="Background">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SyncfusionGridHeaderCellControlBackgroundPressed}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="AscendingSortDirection" Storyboard.TargetProperty="Foreground">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SyncfusionDataGridSortIconForegroundPressed}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="DescendingSortDirection" Storyboard.TargetProperty="Foreground">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SyncfusionDataGridSortIconForegroundPressed}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PART_FilterToggleButton" Storyboard.TargetProperty="Foreground">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SyncfusionDataGridSortIconForegroundPressed}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SortNumber" Storyboard.TargetProperty="Foreground">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SyncfusionGridHeaderCellControlForegroundPressed}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="contentPresenter" Storyboard.TargetProperty="(TextBlock.Foreground)">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SyncfusionGridHeaderCellControlForegroundPressed}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                                <VisualStateGroup x:Name="BorderStates">
+                                    <VisualState x:Name="NormalCell" />
+                                    <VisualState x:Name="FrozenColumnCell">
+                                        <Storyboard BeginTime="0">
+                                            <ObjectAnimationUsingKeyFrames BeginTime="0"
+                                        Duration="1"
+                                        Storyboard.TargetName="PART_FrozenCellBorder"
+                                        Storyboard.TargetProperty="BorderThickness">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="0,0,1,0" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="FooterColumnCell">
+                                        <Storyboard BeginTime="0">
+                                            <ObjectAnimationUsingKeyFrames BeginTime="0"
+                                        Duration="1"
+                                        Storyboard.TargetName="PART_FooterCellBorder"
+                                        Storyboard.TargetProperty="BorderThickness">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="1,0,0,0" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="BeforeFooterColumnCell">
+                                        <Storyboard BeginTime="0">
+                                            <ObjectAnimationUsingKeyFrames BeginTime="0"
+                                        Duration="1"
+                                        Storyboard.TargetName="PART_FooterCellBorder"
+                                        Storyboard.TargetProperty="BorderThickness">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="0,0,0,0" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames BeginTime="0"
+                                        Duration="1"
+                                        Storyboard.TargetName="PART_HeaderCellBorder"
+                                        Storyboard.TargetProperty="Margin">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="0,0,-1,0" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Border x:Name="PART_FrozenCellBorder"
+                                     Background="{TemplateBinding Background}"
+                                     BorderBrush="{TemplateBinding BorderBrush}"/>
+                            <Border x:Name="PART_FooterCellBorder"
+                                     Background="{TemplateBinding Background}"
+                                     BorderBrush="{TemplateBinding BorderBrush}" />
+                            <Border x:Name="PART_HeaderCellBorder"
+                                     Background="{TemplateBinding Background}"
+                                     BorderBrush="{TemplateBinding BorderBrush}"
+                                     BorderThickness="{TemplateBinding HeaderCellBorderThickness}">
+
+                                <Grid Background="Transparent" Margin="{TemplateBinding Padding}">
+                                    <Grid.ColumnDefinitions>
+                                        <!-- Extra space is added in the header cell template to accommodate the edit icon -->
+                                        <ColumnDefinition Width="Auto" />
+                                        
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- The icon is displayed when editing is allowed and its shown before the content presenter -->
+                                    <fluent:SymbolIcon Grid.Column="0" Symbol="Edit" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,2,0,0" 
+                                                     Visibility="{Binding AllowEditing, Converter={StaticResource VisiblityConverter}}"/>
+
+                                    <ContentPresenter x:Name="contentPresenter" Grid.Column="1" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center" />
+                                    <Border x:Name="PART_FilterPopUpPresenter" Grid.Column="1"/>
+                                    <Grid x:Name="PART_SortButtonPresenter" Grid.Column="2" Margin="0,-2,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="0" MinWidth="{Binding Path=SortDirection, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource emptyObjectToObjectConverter}}" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <FontIcon x:Name="AscendingSortDirection" Foreground="{ThemeResource SyncfusionDataGridSortIconForeground}" Glyph="&#xE74A;" Height="12" FontSize="{ThemeResource SyncfusionDataGridSortIconFontSize}" 
+                                                    Visibility="{Binding Path=SortDirection,
+                                                    RelativeSource={RelativeSource TemplatedParent},
+                                                    ConverterParameter=Ascending,
+                                                    Converter={StaticResource sortDirectionToVisibilityConverter}}"   />        
+
+
+                                        <FontIcon x:Name="DescendingSortDirection" Foreground="{ThemeResource SyncfusionDataGridSortIconForeground}" Glyph="&#xE74B;" Height="12" FontSize="{ThemeResource SyncfusionDataGridSortIconFontSize}"
+                                                    Visibility="{Binding Path=SortDirection,
+                                                    RelativeSource={RelativeSource TemplatedParent},
+                                                    ConverterParameter=Decending,
+                                                    Converter={StaticResource sortDirectionToVisibilityConverter}}"  />
+
+                                        <TextBlock x:Name="SortNumber"
+                                                    Grid.Column="1"
+                                                    VerticalAlignment="Center"
+                                                    Margin="0,3,0,0"
+                                                    FontSize="{ThemeResource SyncfusionCaptionFontSize}"
+                                                    FontFamily="{ThemeResource SyncfusionDataGridFontFamily}"
+                                                    Height="16"
+                                                    Foreground="{TemplateBinding Foreground}"
+                                                    Text="{TemplateBinding SortNumber}"
+                                                    Visibility="{TemplateBinding SortNumberVisibility}" />
+                                    </Grid>
+                                    
+                                    <!-- The filter icon is shown at the right end of the header cell -->
+                                    <grids:FilterToggleButton x:Name="PART_FilterToggleButton"
+                                           AutomationProperties.Name="filter"
+                                           Grid.Column="3"
+                                           Width="30"
+                                           Height="30"
+                                           Margin="0,2,0,0"
+                                           HorizontalAlignment="Right"
+                                           VerticalAlignment="Top"
+                                           IsTabStop="False"
+                                           Visibility="{TemplateBinding FilterIconVisibility}" />
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Template for DataGrid header cells -->
+        <DataTemplate x:Key="DataGridEditableColumnHeaderTemplate">
+            <TextBlock Text="{Binding}" TextWrapping="WrapWholeWords"  FontSize="13" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" TextTrimming="Clip" Foreground="Green"   TextAlignment="Center" />
+        </DataTemplate>
+
+        <!-- Template for DataGrid header cells -->
+        <DataTemplate x:Key="DataGridNonEditableColumnHeaderTemplate">
+            <TextBlock Text="{Binding}" TextWrapping="WrapWholeWords"  FontSize="13" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" TextTrimming="Clip" Foreground="Red"   TextAlignment="Center" />
+        </DataTemplate>
+    </ResourceDictionary>
+</Application.Resources>
+```
+
+![Customize Header Content and Filter Icon Position](Customize%20Header%20Content%20and%20Filter%20Icon%20Position.gif)
+
+Take a moment to peruse the [WinUI DataGrid](https://help.syncfusion.com/winui/datagrid/getting-started) documentation, to learn more about datagrid and it's features.
